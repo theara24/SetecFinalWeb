@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout - OurShop</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .form-input {
+        @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#CBB89D] focus:border-[#CBB89D];
+      }
+      .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+      }
+      .required:after {
+        content: ' *';
+        @apply text-red-500;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <header>
+      <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center h-16">
+            <div class="flex items-center">
+              <a href="../index.html" class="flex items-center">
+                <i class="fas fa-shopping-bag text-[#CBB89D] text-2xl mr-2"></i>
+                <span class="text-xl font-bold text-[#CBB89D]">OurShop</span>
+              </a>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+              <a href="../index.html" class="text-gray-700 hover:text-[#806044]"
+                >Home</a
+              >
+              <a href="shop.html" class="text-[#CBB89D] hover:text-[#806044]"
+                >Shop</a
+              >
+              <a href="about.html" class="text-gray-700 font-medium">About</a>
+              <a href="contact.html" class="text-gray-700 hover:text-[#806044]"
+                >Contact</a
+              >
+              <a
+                href="cart.html"
+                class="text-gray-700 hover:text-[#806044] relative"
+              >
+                <i class="fas fa-shopping-cart"></i>
+                <span
+                  id="cart-count"
+                  class="absolute -top-2 -right-3 bg-[#CBB89D] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                  >0</span
+                >
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h1 class="text-3xl font-bold mb-8">Checkout</h1>
+
+      <div class="grid grid-cols-1 gap-8">
+        <!-- Order Summary (First) -->
+        <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
+          <h2 class="text-xl font-bold mb-6">Order Summary</h2>
+
+          <div id="order-items" class="mb-6">
+            <!-- Cart items will be displayed here -->
+            <div id="empty-cart-message" class="text-center py-4">
+              <i class="fas fa-shopping-cart text-2xl text-gray-300 mb-2"></i>
+              <p class="text-gray-500">Your cart is empty</p>
+            </div>
+
+            <div id="order-content" class="hidden">
+              <div id="order-items-list" class="space-y-4 mb-4">
+                <!-- Order items will be added here -->
+              </div>
+
+              <div class="border-t pt-4">
+                <div class="flex justify-between mb-2">
+                  <span>Subtotal:</span>
+                  <span>$<span id="subtotal">0.00</span></span>
+                </div>
+                <div class="flex justify-between mb-2">
+                  <span>Shipping:</span>
+                  <span>$<span id="shipping">5.00</span></span>
+                </div>
+                <div class="flex justify-between mb-2">
+                  <span>Tax (10%):</span>
+                  <span>$<span id="tax">0.00</span></span>
+                </div>
+                <div
+                  class="flex justify-between font-bold text-lg mt-4 pt-4 border-t"
+                >
+                  <span>Total:</span>
+                  <span>$<span id="total">0.00</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Information Form (Second) -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-8 space-y-6">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+            Customer Information
+          </h2>
+          <form id="customer-form" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  for="full-name"
+                  class="block text-lg font-medium text-gray-700"
+                  >Full Name</label
+                >
+                <input
+                  type="text"
+                  id="full-name"
+                  class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  for="email"
+                  class="block text-lg font-medium text-gray-700"
+                  >Email</label
+                >
+                <input
+                  type="email"
+                  id="email"
+                  class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  for="phone"
+                  class="block text-lg font-medium text-gray-700"
+                  >Phone Number</label
+                >
+                <input
+                  type="tel"
+                  id="phone"
+                  class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
+                />
+              </div>
+              <div>
+                <label
+                  for="address"
+                  class="block text-lg font-medium text-gray-700"
+                  >Address</label
+                >
+                <input
+                  type="text"
+                  id="address"
+                  class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="note" class="block text-lg font-medium text-gray-700"
+                >Order Notes (Optional)</label
+              >
+              <textarea
+                id="note"
+                rows="4"
+                class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
+              ></textarea>
+            </div>
+          </form>
+        </div>
+
+        <!-- Payment Options (Third) -->
+        <div class="bg-white rounded-lg shadow-lg p-8 space-y-6">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+            Payment Method
+          </h2>
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <input
+                id="payment-cod"
+                type="radio"
+                name="payment"
+                value="cod"
+                class="h-5 w-5 text-[#CBB89D] focus:ring-[#CBB89D]"
+                checked
+              />
+              <label for="payment-cod" class="ml-3 text-lg text-gray-700"
+                >Cash on Delivery</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="payment-bakong"
+                type="radio"
+                name="payment"
+                value="bakong"
+                class="h-5 w-5 text-[#CBB89D] focus:ring-[#CBB89D]"
+              />
+              <label for="payment-bakong" class="ml-3 text-lg text-gray-700"
+                >Bakong</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="payment-paypal"
+                type="radio"
+                name="payment"
+                value="paypal"
+                class="h-5 w-5 text-[#CBB89D] focus:ring-[#CBB89D]"
+              />
+              <label for="payment-paypal" class="ml-3 text-lg text-gray-700"
+                >PayPal</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="payment-card"
+                type="radio"
+                name="payment"
+                value="card"
+                class="h-5 w-5 text-[#CBB89D] focus:ring-[#CBB89D]"
+              />
+              <label for="payment-card" class="ml-3 text-lg text-gray-700"
+                >Credit/Debit Card</label
+              >
+            </div>
+          </div>
+        </div>
+
+        <button
+          id="place-order-btn"
+          class="w-full bg-[#CBB89D] hover:bg-[#806044] text-white py-3 rounded-lg font-medium transition"
+        >
+          Place Order
+        </button>
+      </div>
+    </main>
+
+    <script>
+      // Load cart items and calculate totals
+      function loadOrderSummary() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const orderItemsList = document.getElementById('order-items-list');
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        const orderContent = document.getElementById('order-content');
+
+        if (cart.length === 0) {
+          emptyCartMessage.classList.remove('hidden');
+          orderContent.classList.add('hidden');
+          document.getElementById('place-order-btn').disabled = true;
+          return;
+        }
+
+        emptyCartMessage.classList.add('hidden');
+        orderContent.classList.remove('hidden');
+        document.getElementById('place-order-btn').disabled = false;
+
+        let subtotal = 0;
+        orderItemsList.innerHTML = '';
+
+        cart.forEach((item) => {
+          const itemElement = document.createElement('div');
+          itemElement.classList.add('flex', 'justify-between');
+          itemElement.innerHTML = `
+            <span>${item.name} x${item.quantity}</span>
+            <span>$${(item.price * item.quantity).toFixed(2)}</span>
+          `;
+          orderItemsList.appendChild(itemElement);
+          subtotal += item.price * item.quantity;
+        });
+
+        const tax = subtotal * 0.1;
+        const total = subtotal + tax + 5; // Adding shipping cost
+
+        document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+        document.getElementById('shipping').textContent = '5.00';
+        document.getElementById('tax').textContent = tax.toFixed(2);
+        document.getElementById('total').textContent = total.toFixed(2);
+      }
+
+      document.addEventListener('DOMContentLoaded', loadOrderSummary);
+    </script>
+  </body>
+</html>

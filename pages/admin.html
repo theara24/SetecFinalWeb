@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - BookStore</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Custom Color Palette */
+      .bg-primary {
+        background-color: #cbb89d;
+      }
+      .bg-primary-dark {
+        background-color: #b8a58c;
+      }
+      .text-primary {
+        color: #cbb89d;
+      }
+      .border-primary {
+        border-color: #cbb89d;
+      }
+      .bg-secondary {
+        background-color: #806044;
+      }
+      .bg-secondary-dark {
+        background-color: #6d5238;
+      }
+      .text-secondary {
+        color: #806044;
+      }
+      .border-secondary {
+        border-color: #806044;
+      }
+
+      /* Hover states */
+      .hover\:bg-primary-dark:hover {
+        background-color: #b8a58c;
+      }
+      .hover\:bg-secondary-dark:hover {
+        background-color: #6d5238;
+      }
+
+      /* Sidebar and card styles */
+      .sidebar {
+        min-height: 100vh;
+        background-color: #cbb89d;
+      }
+      .sidebar .nav-link {
+        color: white;
+        transition: all 0.3s ease;
+      }
+      .sidebar .nav-link:hover,
+      .sidebar .nav-link.active {
+        background-color: #806044;
+        color: white;
+      }
+      .card {
+        @apply bg-white rounded-lg shadow-md p-6 transition transform hover:scale-105 hover:shadow-lg;
+      }
+      .card-icon {
+        font-size: 2.5rem;
+        color: #cbb89d;
+        margin-bottom: 1rem;
+      }
+      .dashboard {
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <div class="flex flex-row min-h-screen">
+      <!-- Sidebar -->
+      <nav class="w-64 sidebar flex-shrink-0">
+        <div class="pt-6">
+          <h4 class="text-center py-3 text-white text-xl font-bold">
+            BookStore Admin
+          </h4>
+          <ul class="mt-4 space-y-2 px-3">
+            <li>
+              <a
+                class="nav-link active flex items-center p-3 rounded-lg"
+                href="admin.html"
+              >
+                <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+              </a>
+            </li>
+            <li>
+              <a
+                class="nav-link flex items-center p-3 rounded-lg"
+                href="registerBooks.html"
+              >
+                <i class="fas fa-book mr-2"></i> Register Books
+              </a>
+            </li>
+            <li>
+              <a
+                class="nav-link flex items-center p-3 rounded-lg"
+                href="manageBooks.html"
+              >
+                <i class="fas fa-table mr-2"></i> Manage Books
+              </a>
+            </li>
+            <li>
+              <a class="nav-link flex items-center p-3 rounded-lg" href="#">
+                <i class="fas fa-cog mr-2"></i> Settings
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="flex-grow p-6">
+        <nav
+          class="bg-white shadow-md rounded-lg p-4 mb-6 flex justify-between items-center"
+        >
+          <h1 class="text-xl font-bold text-gray-800">Dashboard</h1>
+          <button
+            id="logoutBtn"
+            class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-lg flex items-center transition"
+          >
+            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+          </button>
+        </nav>
+
+        <section class="dashboard">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">
+            Welcome to BookStore POS
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="card">
+              <i class="fas fa-book card-icon"></i>
+              <h5 class="text-lg font-semibold text-gray-700">Total Books</h5>
+              <p id="totalBooks" class="text-gray-600">Loading...</p>
+            </div>
+            <div class="card">
+              <i class="fas fa-tags card-icon"></i>
+              <h5 class="text-lg font-semibold text-gray-700">Genres</h5>
+              <p id="totalGenres" class="text-gray-600">Loading...</p>
+            </div>
+            <div class="card">
+              <i class="fas fa-clock card-icon"></i>
+              <h5 class="text-lg font-semibold text-gray-700">
+                Recent Additions
+              </h5>
+              <ul
+                id="recentBooks"
+                class="text-gray-600 list-disc list-inside"
+              ></ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      // Load dashboard metrics
+      function loadDashboardMetrics() {
+        let storedData = localStorage.getItem('book_list');
+        let books = [];
+        try {
+          books = storedData ? JSON.parse(storedData) : [];
+          if (!Array.isArray(books)) books = [];
+        } catch (error) {
+          console.error('Error parsing book_list from localStorage', error);
+          books = [];
+        }
+
+        $('#totalBooks').text(books.length || 'No books available');
+        const genres = [...new Set(books.map((book) => book.genre))];
+        $('#totalGenres').text(genres.length || 'No genres available');
+
+        const recentBooksList = $('#recentBooks');
+        recentBooksList.empty();
+        if (books.length === 0) {
+          recentBooksList.append('<li>None</li>');
+        } else {
+          books
+            .slice(-3)
+            .reverse()
+            .forEach((book) => {
+              recentBooksList.append(`<li>${book.title}</li>`);
+            });
+        }
+      }
+
+      // Logout functionality
+      $('#logoutBtn').on('click', function () {
+        localStorage.removeItem('userRole');
+        window.location.href = 'register.html';
+      });
+
+      // Check admin access
+      $(document).ready(function () {
+        const userRole = localStorage.getItem('userRole');
+        if (userRole !== 'admin') {
+          window.location.href = 'register.html?role=admin';
+        } else {
+          loadDashboardMetrics();
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Confirmation - OurShop</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <header>
+      <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center h-16">
+            <div class="flex items-center">
+              <a href="../index.html" class="flex items-center">
+                <i class="fas fa-shopping-bag text-[#CBB89D] text-2xl mr-2"></i>
+                <span class="text-xl font-bold text-[#CBB89D]">OurShop</span>
+              </a>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+              <a href="../index.html" class="text-gray-700 hover:text-[#806044]"
+                >Home</a
+              >
+              <a href="shop.html" class="text-[#CBB89D] hover:text-[#806044]"
+                >Shop</a
+              >
+              <a href="about.html" class="text-gray-700 font-medium">About</a>
+              <a href="contact.html" class="text-gray-700 hover:text-[#806044]"
+                >Contact</a
+              >
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="bg-white rounded-lg shadow-md p-8 text-center">
+        <div
+          class="w-16 h-16 bg-[#CBB89D]/20 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i class="fas fa-check text-[#CBB89D] text-2xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold mb-2">Thank you for your order!</h1>
+        <p class="text-gray-600 mb-6">
+          Your order has been placed successfully.
+        </p>
+
+        <div
+          id="order-details"
+          class="max-w-md mx-auto bg-[#CBB89D]/10 rounded-lg p-6 text-left mb-6"
+        >
+          <!-- Order details will be filled by JavaScript -->
+        </div>
+
+        <a
+          href="../index.html"
+          class="inline-block bg-[#CBB89D] hover:bg-[#806044] text-white px-6 py-2 rounded-lg font-medium"
+        >
+          Continue Shopping
+        </a>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Get order ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+
+        if (!orderId) {
+          window.location.href = '../index.html';
+          return;
+        }
+
+        // Find the order in localStorage
+        const orders = JSON.parse(localStorage.getItem('orders')) || [];
+        const order = orders.find((o) => o.id === orderId);
+
+        if (!order) {
+          window.location.href = '../index.html';
+          return;
+        }
+
+        // Display order details
+        const orderDetails = document.getElementById('order-details');
+        orderDetails.innerHTML = `
+                <div class="mb-4">
+                    <h2 class="text-lg font-bold mb-2">Order #${order.id}</h2>
+                    <p class="text-sm text-gray-500">${new Date(
+                      order.date
+                    ).toLocaleString()}</p>
+                </div>
+                
+                <div class="mb-4">
+                    <h3 class="font-medium mb-2">Customer Information</h3>
+                    <p>${order.customer.name}</p>
+                    <p>${order.customer.email}</p>
+                    <p>${order.customer.phone || 'N/A'}</p>
+                    <p>${order.customer.address}</p>
+                </div>
+                
+                <div class="mb-4">
+                    <h3 class="font-medium mb-2">Payment Method</h3>
+                    <p>${order.customer.paymentMethod.toUpperCase()}</p>
+                </div>
+                
+                <div class="border-t pt-4">
+                    <div class="flex justify-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>$${order.subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span>Shipping:</span>
+                        <span>$${order.shipping.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span>Tax:</span>
+                        <span>$${order.tax.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-lg mt-4 pt-4 border-t">
+                        <span>Total:</span>
+                        <span>$${order.total.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+      });
+    </script>
+  </body>
+</html>

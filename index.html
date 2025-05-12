@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookStore</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Custom Color Palette */
+      .bg-primary {
+        background-color: #cbb89d;
+      }
+      .bg-primary-dark {
+        background-color: #b8a58c;
+      }
+      .text-primary {
+        color: #cbb89d;
+      }
+      .border-primary {
+        border-color: #cbb89d;
+      }
+      .bg-secondary {
+        background-color: #806044;
+      }
+      .bg-secondary-dark {
+        background-color: #6d5238;
+      }
+      .text-secondary {
+        color: #806044;
+      }
+      .border-secondary {
+        border-color: #806044;
+      }
+
+      /* Hover states */
+      .hover\:bg-primary-dark:hover {
+        background-color: #b8a58c;
+      }
+      .hover\:bg-secondary-dark:hover {
+        background-color: #6d5238;
+      }
+
+      /* Modal and other existing styles */
+      #roleModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+      }
+      .btn {
+        margin: 10px;
+      }
+      .hero-bg {
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+          url('https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        background-size: cover;
+        background-position: center;
+      }
+      .book-card {
+        transition: all 0.3s ease;
+      }
+      .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      .filter-section {
+        scrollbar-width: thin;
+        scrollbar-color: #806044 #f1f1f1;
+      }
+      .filter-section::-webkit-scrollbar {
+        width: 6px;
+      }
+      .filter-section::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      .filter-section::-webkit-scrollbar-thumb {
+        background-color: #806044;
+        border-radius: 6px;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+      .card-img-top {
+        height: 200px;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <div
+      id="roleModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg p-6 max-w-sm w-full">
+        <h3 class="text-xl font-bold mb-4 text-center">Select Your Role</h3>
+        <div class="flex flex-col space-y-4">
+          <button
+            id="adminRole"
+            class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-lg transition"
+          >
+            Admin
+          </button>
+          <button
+            id="customerRole"
+            class="bg-secondary hover:bg-secondary-dark text-white py-2 px-4 rounded-lg transition"
+          >
+            Customer
+          </button>
+        </div>
+      </div>
+    </div>
+    <header>
+      <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center h-16">
+            <div class="flex items-center">
+              <a href="index.html" class="flex items-center">
+                <i class="fas fa-book text-primary text-2xl mr-2"></i>
+                <span class="text-xl font-bold text-primary">BookStore</span>
+              </a>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+              <a href="index.html" class="text-gray-700 hover:text-primary"
+                >Home</a
+              >
+              <a href="shop.html" class="text-primary hover:text-primary"
+                >Shop</a
+              >
+              <a href="about.html" class="text-gray-700 font-medium">About</a>
+              <a href="contact.html" class="text-gray-700 hover:text-primary"
+                >Contact</a
+              >
+              <a
+                href="pages/cart.html"
+                class="text-gray-700 hover:text-primary relative"
+              >
+                <i class="fas fa-shopping-cart"></i>
+                <span
+                  id="cart-count"
+                  class="absolute -top-2 -right-3 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                  >0</span
+                >
+              </a>
+            </div>
+            <div class="md:hidden">
+              <button class="text-gray-700 hover:text-primary">
+                <i class="fas fa-bars text-xl"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero-bg text-white py-20 md:py-32">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+          <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+            Discover Amazing Books
+          </h1>
+          <p class="text-xl mb-8 max-w-2xl mx-auto">
+            Explore our curated collection of books for every reader.
+          </p>
+          <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a
+              href="shop.html"
+              class="bg-primary hover:bg-primary-dark text-white px-8 py-3 rounded-lg text-lg font-medium transition transform hover:scale-105"
+            >
+              Browse Books
+            </a>
+            <a
+              href="#featured"
+              class="bg-white hover:bg-gray-100 text-primary px-8 py-3 rounded-lg text-lg font-medium transition transform hover:scale-105"
+            >
+              Featured
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+          <div class="lg:w-1/4">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h2 class="text-xl font-bold text-gray-800 mb-4">
+                Quick Filters
+              </h2>
+              <div class="space-y-4">
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Search by title or author"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                    id="quick-search"
+                  />
+                </div>
+                <div>
+                  <select
+                    id="genre-filter"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                  >
+                    <option value="">All Genres</option>
+                    <option value="Fiction">Fiction</option>
+                    <option value="Non-Fiction">Non-Fiction</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Sci-Fi">Sci-Fi</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Biography">Biography</option>
+                  </select>
+                </div>
+                <div class="flex space-x-2">
+                  <button
+                    id="reset-filters"
+                    class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300"
+                  >
+                    Reset
+                  </button>
+                  <button
+                    id="apply-filters"
+                    class="flex-1 bg-primary hover:bg-primary-dark text-white py-2 rounded-lg"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h3 class="font-medium text-gray-800 mb-3">Price Range</h3>
+              <div class="space-y-2">
+                <div class="flex items-center">
+                  <input
+                    id="price-all"
+                    type="radio"
+                    name="price"
+                    value=""
+                    class="h-4 w-4 text-primary focus:ring-primary"
+                    checked
+                  />
+                  <label for="price-all" class="ml-2 text-sm text-gray-700"
+                    >All Prices</label
+                  >
+                </div>
+                <div class="flex items-center">
+                  <input
+                    id="price-10"
+                    type="radio"
+                    name="price"
+                    value="0-10"
+                    class="h-4 w-4 text-primary focus:ring-primary"
+                  />
+                  <label for="price-10" class="ml-2 text-sm text-gray-700"
+                    >Under $10</label
+                  >
+                </div>
+                <div class="flex items-center">
+                  <input
+                    id="price-20"
+                    type="radio"
+                    name="price"
+                    value="10-20"
+                    class="h-4 w-4 text-primary focus:ring-primary"
+                  />
+                  <label for="price-20" class="ml-2 text-sm text-gray-700"
+                    >$10 - $20</label
+                  >
+                </div>
+                <div class="flex items-center">
+                  <input
+                    id="price-50"
+                    type="radio"
+                    name="price"
+                    value="20-50"
+                    class="h-4 w-4 text-primary focus:ring-primary"
+                  />
+                  <label for="price-50" class="ml-2 text-sm text-gray-700"
+                    >$20 - $50</label
+                  >
+                </div>
+                <div class="flex items-center">
+                  <input
+                    id="price-50plus"
+                    type="radio"
+                    name="price"
+                    value="50+"
+                    class="h-4 w-4 text-primary focus:ring-primary"
+                  />
+                  <label for="price-50plus" class="ml-2 text-sm text-gray-700"
+                    >Over $50</label
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:w-3/4">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+              <div
+                class="flex flex-col md:flex-row md:items-center md:justify-between"
+              >
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 md:mb-0">
+                  All Books
+                </h2>
+                <div class="flex items-center space-x-4">
+                  <div class="flex items-center">
+                    <label for="sort" class="text-sm text-gray-700 mr-2"
+                      >Sort by:</label
+                    >
+                    <select
+                      id="sort"
+                      class="text-sm border border-gray-300 rounded px-3 py-1 focus:ring-primary focus:border-primary"
+                    >
+                      <option value="title-asc">Title: A-Z</option>
+                      <option value="title-desc">Title: Z-A</option>
+                      <option value="price-low">Price: Low to High</option>
+                      <option value="price-high">Price: High to Low</option>
+                    </select>
+                  </div>
+                  <div
+                    class="hidden md:flex items-center text-sm text-gray-500"
+                  >
+                    <span id="book-count">0</span> books found
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <section class="px-3 py-5 bg-neutral-100 lg:py-10 mb-8">
+              <div
+                class="grid lg:grid-cols-2 items-center justify-items-center gap-5"
+              >
+                <div
+                  class="order-2 lg:order-1 flex flex-col justify-center items-center"
+                >
+                  <p class="text-4xl font-bold md:text-7xl text-secondary">
+                    25% OFF
+                  </p>
+                  <p class="text-4xl font-bold md:text-7xl">SUMMER READING</p>
+                  <p class="mt-2 text-sm md:text-lg">
+                    For a limited time only!
+                  </p>
+                  <button
+                    class="text-lg md:text-2xl bg-secondary hover:bg-secondary-dark text-white py-2 px-5 mt-10"
+                  >
+                    Shop Now
+                  </button>
+                </div>
+                <div class="order-1 lg:order-2">
+                  <img
+                    class="h-80 w-80 object-cover lg:w-[500px] lg:h-[500px]"
+                    src="https://images.unsplash.com/photo-1491841573634-28140fc7ced7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+                    alt="Summer reading sale"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div
+                id="book-list"
+                class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              >
+                <!-- Books will be rendered here -->
+              </div>
+            </section>
+
+            <div class="mt-8 flex justify-center">
+              <nav class="flex items-center space-x-2" id="pagination">
+                <button
+                  id="prev-page"
+                  class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                  disabled
+                >
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <span id="page-numbers"></span>
+                <button
+                  id="next-page"
+                  class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                  disabled
+                >
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section class="py-16 bg-secondary text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold mb-6">Join Our Book Community</h2>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">
+          Sign up for our newsletter to get exclusive deals and book updates.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a
+            href="shop.html"
+            class="bg-white text-secondary px-8 py-3 rounded-lg text-lg font-medium hover:bg-gray-100 transition"
+          >
+            Shop Now
+          </a>
+          <a
+            href="contact.html"
+            class="border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-secondary-dark transition"
+          >
+            Contact Us
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="bg-gray-800 text-white py-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-lg font-semibold mb-4">BookStore</h3>
+            <p class="text-gray-400">
+              Your favorite online bookstore for quality reads.
+            </p>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="index.html" class="text-gray-400 hover:text-white"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a href="shop.html" class="text-gray-400 hover:text-white"
+                  >Shop</a
+                >
+              </li>
+              <li>
+                <a href="about.html" class="text-gray-400 hover:text-white"
+                  >About</a
+                >
+              </li>
+              <li>
+                <a href="contact.html" class="text-gray-400 hover:text-white"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Customer Service</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="text-gray-400 hover:text-white">FAQs</a>
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-white">Shipping</a>
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-white">Returns</a>
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-white"
+                  >Privacy Policy</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Connect</h3>
+            <div class="flex space-x-4 mb-4">
+              <a href="#" class="text-gray-400 hover:text-white"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="#" class="text-gray-400 hover:text-white"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="#" class="text-gray-400 hover:text-white"
+                ><i class="fab fa-instagram"></i
+              ></a>
+            </div>
+            <p class="text-gray-400 text-sm">
+              123 Book Street, Library City, LC 12345
+            </p>
+          </div>
+        </div>
+        <div
+          class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400 text-sm"
+        >
+          <p>© 2025 BookStore. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      // Role Selection Functionality
+      document.addEventListener('DOMContentLoaded', function () {
+        const selectedRole = localStorage.getItem('userRole');
+        if (!selectedRole) {
+          document.getElementById('roleModal').style.display = 'flex';
+        } else {
+          document.getElementById('roleModal').style.display = 'none';
+        }
+
+        document
+          .getElementById('adminRole')
+          .addEventListener('click', function () {
+            localStorage.setItem('userRole', 'admin');
+            document.getElementById('roleModal').style.display = 'none';
+            window.location.href = 'pages/register.html?role=admin';
+          });
+
+        document
+          .getElementById('customerRole')
+          .addEventListener('click', function () {
+            localStorage.setItem('userRole', 'customer');
+            document.getElementById('roleModal').style.display = 'none';
+            window.location.href = 'pages/register.html?role=customer';
+          });
+      });
+
+      // Load books from localStorage
+      let books = [];
+      try {
+        const data = localStorage.getItem('book_list');
+        books = data ? JSON.parse(data) : [];
+        if (!Array.isArray(books)) books = [];
+      } catch (error) {
+        console.error('Failed to load book_list:', error);
+        books = [];
+      }
+
+      // Render books
+      function renderBooks(filteredBooks = books) {
+        const bookList = document.getElementById('book-list');
+        bookList.innerHTML = '';
+
+        if (filteredBooks.length === 0) {
+          bookList.innerHTML =
+            '<p class="text-center col-span-full">No books available.</p>';
+          document.getElementById('book-count').textContent = '0';
+          return;
+        }
+
+        filteredBooks.forEach((book, index) => {
+          const bookCard = document.createElement('div');
+          bookCard.className =
+            'book-card bg-white rounded-lg shadow-md overflow-hidden animate-fadeIn';
+          bookCard.innerHTML = `
+            <div class="h-full flex flex-col">
+              <img src="${book.image}" class="card-img-top w-full" alt="${
+            book.title
+          }">
+              <div class="p-4 flex-grow flex flex-col">
+                <h3 class="font-bold text-lg mb-1 text-gray-800 truncate">${
+                  book.title
+                }</h3>
+                <p class="text-sm text-gray-600 mb-1">by ${book.author}</p>
+                <p class="text-sm text-secondary mb-3">${book.genre}</p>
+                <p class="text-gray-800 font-bold text-lg mb-4">$${parseFloat(
+                  book.price
+                ).toFixed(2)}</p>
+                <button onclick="addToCart(${index})" class="mt-auto bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-lg transition">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          `;
+          bookList.appendChild(bookCard);
+        });
+
+        document.getElementById('book-count').textContent =
+          filteredBooks.length;
+      }
+
+      // Add book to cart
+      function addToCart(index) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const book = books[index];
+
+        const existingItemIndex = cart.findIndex(
+          (item) => item.isbn === book.isbn
+        );
+
+        if (existingItemIndex >= 0) {
+          cart[existingItemIndex].quantity =
+            (cart[existingItemIndex].quantity || 1) + 1;
+        } else {
+          const bookToAdd = { ...book, quantity: 1 };
+          cart.push(bookToAdd);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart人格: updateCartCount();
+
+        const notification = document.createElement('div');
+        notification.className =
+          'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg';
+        notification.textContent = `${book.title} added to cart!`;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.remove();
+        }, 3000);
+      }
+
+      // Update cart count
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        document.getElementById('cart-count').textContent = cart.reduce(
+          (total, item) => total + (item.quantity || 1),
+          0
+        );
+      }
+
+      // Filter and sort functionality
+      function applyFilters() {
+        const searchTerm = document
+          .getElementById('quick-search')
+          .value.toLowerCase();
+        const genre = document.getElementById('genre-filter').value;
+        const priceRange = document.querySelector(
+          'input[name="price"]:checked'
+        ).value;
+        const sort = document.getElementById('sort').value;
+
+        let filteredBooks = [...books];
+
+        // Search filter
+        if (searchTerm) {
+          filteredBooks = filteredBooks.filter(
+            (book) =>
+              book.title.toLowerCase().includes(searchTerm) ||
+              book.author.toLowerCase().includes(searchTerm)
+          );
+        }
+
+        // Genre filter
+        if (genre) {
+          filteredBooks = filteredBooks.filter((book) => book.genre === genre);
+        }
+
+        // Price filter
+        if (priceRange) {
+          if (priceRange === '0-10') {
+            filteredBooks = filteredBooks.filter(
+              (book) => parseFloat(book.price) <= 10
+            );
+          } else if (priceRange === '10-20') {
+            filteredBooks = filteredBooks.filter(
+              (book) =>
+                parseFloat(book.price) > 10 && parseFloat(book.price) <= 20
+            );
+          } else if (priceRange === '20-50') {
+            filteredBooks = filteredBooks.filter(
+              (book) =>
+                parseFloat(book.price) > 20 && parseFloat(book.price) <= 50
+            );
+          } else if (priceRange === '50+') {
+            filteredBooks = filteredBooks.filter(
+              (book) => parseFloat(book.price) > 50
+            );
+          }
+        }
+
+        // Sort
+        if (sort === 'title-asc') {
+          filteredBooks.sort((a, b) => a.title.localeCompare(b.title));
+        } else if (sort === 'title-desc') {
+          filteredBooks.sort((a, b) => b.title.localeCompare(a.title));
+        } else if (sort === 'price-low') {
+          filteredBooks.sort(
+            (a, b) => parseFloat(a.price) - parseFloat(b.price)
+          );
+        } else if (sort === 'price-high') {
+          filteredBooks.sort(
+            (a, b) => parseFloat(b.price) - parseFloat(a.price)
+          );
+        }
+
+        renderBooks(filteredBooks);
+      }
+
+      // Event listeners
+      document
+        .getElementById('quick-search')
+        .addEventListener('input', applyFilters);
+      document
+        .getElementById('genre-filter')
+        .addEventListener('change', applyFilters);
+      document.getElementById('sort').addEventListener('change', applyFilters);
+      document.querySelectorAll('input[name="price"]').forEach((radio) => {
+        radio.addEventListener('change', applyFilters);
+      });
+      document.getElementById('reset-filters').addEventListener('click', () => {
+        document.getElementById('quick-search').value = '';
+        document.getElementById('genre-filter').value = '';
+        document.getElementById('price-all').checked = true;
+        document.getElementById('sort').value = 'title-asc';
+        renderBooks();
+      });
+      document
+        .getElementById('apply-filters')
+        .addEventListener('click', applyFilters);
+
+      // Initial render
+      renderBooks();
+      updateCartCount();
+    </script>
+  </body>
+</html>
