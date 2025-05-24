@@ -12,16 +12,26 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
       rel="stylesheet"
     />
+        <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
       body {
         overflow-x: hidden;
       }
+      /* Sidebar and card styles */
       .sidebar {
         min-height: 100vh;
         background-color: #cbb89d;
       }
       .sidebar .nav-link {
         color: white;
+        transition: all 0.3s ease;
       }
       .sidebar .nav-link:hover,
       .sidebar .nav-link.active {
@@ -79,6 +89,17 @@
       }
       .form-control.is-invalid ~ .invalid-feedback {
         display: block;
+      }
+      .dashboard {
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
     </style>
   </head>
@@ -292,12 +313,12 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      let bookList = JSON.parse(localStorage.getItem("book_list")) || [];
+      let bookList = JSON.parse(localStorage.getItem('book_list')) || [];
       let editIndex = null;
 
       function renderTable() {
-        const tableBody = document.getElementById("book_table");
-        tableBody.innerHTML = "";
+        const tableBody = document.getElementById('book_table');
+        tableBody.innerHTML = '';
         bookList.forEach((book, index) => {
           tableBody.innerHTML += `
             <tr>
@@ -321,7 +342,7 @@
       }
 
       function validateISBN(isbn) {
-        isbn = isbn.replace(/[-\s]/g, "");
+        isbn = isbn.replace(/[-\s]/g, '');
         return /^\d{10,13}$/.test(isbn);
       }
 
@@ -337,112 +358,112 @@
       function editBook(index) {
         editIndex = index;
         const book = bookList[index];
-        document.getElementById("edit_isbn").value = book.isbn;
-        document.getElementById("edit_title").value = book.title;
-        document.getElementById("edit_author").value = book.author;
-        document.getElementById("edit_genre").value = book.genre;
-        document.getElementById("edit_cost").value = book.cost;
-        document.getElementById("edit_price").value = book.price;
-        document.getElementById("edit_image").value = book.image;
+        document.getElementById('edit_isbn').value = book.isbn;
+        document.getElementById('edit_title').value = book.title;
+        document.getElementById('edit_author').value = book.author;
+        document.getElementById('edit_genre').value = book.genre;
+        document.getElementById('edit_cost').value = book.cost;
+        document.getElementById('edit_price').value = book.price;
+        document.getElementById('edit_image').value = book.image;
 
         // Reset validation states
         const inputs = [
-          "edit_isbn",
-          "edit_title",
-          "edit_author",
-          "edit_genre",
-          "edit_cost",
-          "edit_price",
-          "edit_image",
+          'edit_isbn',
+          'edit_title',
+          'edit_author',
+          'edit_genre',
+          'edit_cost',
+          'edit_price',
+          'edit_image',
         ];
         inputs.forEach((id) => {
-          document.getElementById(id).classList.remove("is-invalid");
+          document.getElementById(id).classList.remove('is-invalid');
         });
 
         // Show the modal
         const modal = new bootstrap.Modal(
-          document.getElementById("editBookModal")
+          document.getElementById('editBookModal')
         );
         modal.show();
       }
 
       function confirmDelete(index) {
         document.getElementById(
-          "popup_message"
+          'popup_message'
         ).textContent = `Are you sure you want to delete "${bookList[index].title}"?`;
-        document.getElementById("popup").style.display = "block";
-        document.getElementById("popup_overlay").style.display = "block";
-        document.getElementById("popup").dataset.index = index;
+        document.getElementById('popup').style.display = 'block';
+        document.getElementById('popup_overlay').style.display = 'block';
+        document.getElementById('popup').dataset.index = index;
       }
 
       function deleteBook() {
-        const index = document.getElementById("popup").dataset.index;
+        const index = document.getElementById('popup').dataset.index;
         bookList.splice(index, 1);
-        localStorage.setItem("book_list", JSON.stringify(bookList));
+        localStorage.setItem('book_list', JSON.stringify(bookList));
         closePopup();
         renderTable();
       }
 
       function closePopup() {
-        document.getElementById("popup").style.display = "none";
-        document.getElementById("popup_overlay").style.display = "none";
+        document.getElementById('popup').style.display = 'none';
+        document.getElementById('popup_overlay').style.display = 'none';
       }
 
       document
-        .getElementById("saveEditBtn")
-        .addEventListener("click", function () {
+        .getElementById('saveEditBtn')
+        .addEventListener('click', function () {
           // Get form values
-          const isbn = document.getElementById("edit_isbn").value.trim();
-          const title = document.getElementById("edit_title").value.trim();
-          const author = document.getElementById("edit_author").value.trim();
-          const genre = document.getElementById("edit_genre").value;
-          const cost = document.getElementById("edit_cost").value.trim();
-          const price = document.getElementById("edit_price").value.trim();
-          const image = document.getElementById("edit_image").value.trim();
+          const isbn = document.getElementById('edit_isbn').value.trim();
+          const title = document.getElementById('edit_title').value.trim();
+          const author = document.getElementById('edit_author').value.trim();
+          const genre = document.getElementById('edit_genre').value;
+          const cost = document.getElementById('edit_cost').value.trim();
+          const price = document.getElementById('edit_price').value.trim();
+          const image = document.getElementById('edit_image').value.trim();
 
           let isValid = true;
 
           // Reset validation states
           const inputs = [
-            "edit_isbn",
-            "edit_title",
-            "edit_author",
-            "edit_genre",
-            "edit_cost",
-            "edit_price",
-            "edit_image",
+            'edit_isbn',
+            'edit_title',
+            'edit_author',
+            'edit_genre',
+            'edit_cost',
+            'edit_price',
+            'edit_image',
           ];
           inputs.forEach((id) => {
-            document.getElementById(id).classList.remove("is-invalid");
+            document.getElementById(id).classList.remove('is-invalid');
           });
 
           // Validate each field
           if (!validateISBN(isbn)) {
-            document.getElementById("edit_isbn").classList.add("is-invalid");
+            document.getElementById('edit_isbn').classList.add('is-invalid');
             isValid = false;
           }
           if (!title) {
-            document.getElementById("edit_title").classList.add("is-invalid");
+            document.getElementById('edit_title').classList.add('is-invalid');
             isValid = false;
           }
           if (!author) {
-            document.getElementById("edit_author").classList.add("is-invalid");
+            document.getElementById('edit_author').classList.add('is-invalid');
             isValid = false;
           }
           if (!genre) {
-            document.getElementById("edit_genre").classList.add("is-invalid");
+            document.getElementById('edit_genre').classList.add('is-invalid');
             isValid = false;
           }
           if (!cost || isNaN(cost) || parseFloat(cost) <= 0) {
-            document.getElementById("edit_cost").classList.add("is-invalid");
+            document.getElementById('edit_cost').classList.add('is-invalid');
             isValid = false;
           }
           if (!price || isNaN(price) || parseFloat(price) <= 0) {
-            document.getElementById("edit_price").classList.add("is-invalid");
+            document.getElementById('edit_price').classList.add('is-invalid');
             isValid = false;
           }
           if (!image || !validateURL(image)) {
-            document.getElementById("edit_image").classList.add("is-invalid");
+            document.getElementById('edit_image').classList.add('is-invalid');
             isValid = false;
           }
 
@@ -456,29 +477,29 @@
               price,
               image,
             };
-            localStorage.setItem("book_list", JSON.stringify(bookList));
+            localStorage.setItem('book_list', JSON.stringify(bookList));
             const modal = bootstrap.Modal.getInstance(
-              document.getElementById("editBookModal")
+              document.getElementById('editBookModal')
             );
             modal.hide();
-            alert("Book updated successfully!");
+            alert('Book updated successfully!');
             renderTable();
           }
         });
 
       // Logout functionality
       document
-        .getElementById("logoutBtn")
-        .addEventListener("click", function () {
-          localStorage.removeItem("userRole");
-          window.location.href = "register.html";
+        .getElementById('logoutBtn')
+        .addEventListener('click', function () {
+          localStorage.removeItem('userRole');
+          window.location.href = 'register.html';
         });
 
       // Check admin access
-      document.addEventListener("DOMContentLoaded", function () {
-        const userRole = localStorage.getItem("userRole");
-        if (userRole !== "admin") {
-          window.location.href = "register.html?role=admin";
+      document.addEventListener('DOMContentLoaded', function () {
+        const userRole = localStorage.getItem('userRole');
+        if (userRole !== 'admin') {
+          window.location.href = 'register.html?role=admin';
         } else {
           renderTable();
         }

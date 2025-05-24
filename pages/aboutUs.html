@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us - BookStore</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .bg-primary {
+        background-color: #cbb89d;
+      }
+      .bg-primary-dark {
+        background-color: #b8a58c;
+      }
+      .text-primary {
+        color: #cbb89d;
+      }
+      .border-primary {
+        border-color: #cbb89d;
+      }
+      .bg-secondary {
+        background-color: #806044;
+      }
+      .bg-secondary-dark {
+        background-color: #6d5238;
+      }
+      .text-secondary {
+        color: #806044;
+      }
+      .border-secondary {
+        border-color: #806044;
+      }
+      /* Custom Color Palette */
+      .bg-primary {
+        background-color: #cbb89d;
+      }
+      .bg-primary-dark {
+        background-color: #b8a58c;
+      }
+      .text-primary {
+        color: #cbb89d;
+      }
+      .border-primary {
+        border-color: #cbb89d;
+      }
+
+      /* Navbar styling */
+      nav {
+        transition: all 0.3s ease-in-out;
+      }
+      nav.scrolled {
+        height: 4rem; /* Reduced height when scrolled */
+        background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      nav.scrolled .logo-text {
+        font-size: 1rem; /* Smaller logo text */
+      }
+      nav.scrolled .logo-icon {
+        font-size: 1.5rem; /* Smaller logo icon */
+      }
+      nav.scrolled .nav-container {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+      }
+
+      /* Mobile menu animation */
+      #mobile-menu {
+        transition: transform 0.3s ease-in-out;
+        transform: translateY(-100%);
+      }
+      #mobile-menu.open {
+        transform: translateY(0);
+      }
+
+      /* Hover states */
+      .hover\:bg-primary-dark:hover {
+        background-color: #b8a58c;
+      }
+      .hover\:bg-secondary-dark:hover {
+        background-color: #6d5238;
+      }
+      .hero {
+        background-image: linear-gradient(
+            rgba(0, 0, 0, 0.6),
+            rgba(0, 0, 0, 0.6)
+          ),
+          url(https://sandiegomagazine.com/wp-content/uploads/2023/10/Bluestocking-books.jpeg);
+        background-size: cover;
+        background-position: center;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+
+      /* Team card styles */
+      .team-card {
+        transition: all 0.3s ease;
+      }
+      .team-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      .team-img {
+        height: 200px;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <header>
+      <nav class="bg-white shadow-md fixed top-0 w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 nav-container">
+          <div class="flex justify-between items-center h-16">
+            <div class="flex items-center">
+              <a href="../index.html" class="flex items-center">
+                <i class="fas fa-book text-primary text-2xl mr-2 logo-icon"></i>
+                <span class="text-xl font-bold text-primary logo-text"
+                  >BookStore</span
+                >
+              </a>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+              <a href="../index.html" class="text-gray-700 hover:text-primary"
+                >Shop</a
+              >
+              <a href="aboutUs.html" class="text-primary font-medium">About</a>
+              <a href="contact.html" class="text-gray-700 hover:text-primary"
+                >Contact</a
+              >
+              <a
+                href="cart.html"
+                class="text-gray-700 hover:text-primary relative"
+              >
+                <i class="fas fa-shopping-cart"></i>
+                <span
+                  id="cart-count"
+                  class="absolute -top-2 -right-3 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                  >0</span
+                >
+              </a>
+            </div>
+            <div class="md:hidden">
+              <button
+                id="mobile-menu-toggle"
+                class="text-gray-700 hover:text-primary"
+              >
+                <i class="fas fa-bars text-xl"></i>
+              </button>
+            </div>
+          </div>
+          <!-- Mobile Menu -->
+          <div id="mobile-menu" class="hidden md:hidden bg-white shadow-md">
+            <div class="px-4 pt-2 pb-3 space-y-1">
+              <a
+                href="../index.html"
+                class="block text-primary font-medium py-2"
+                >Shop</a
+              >
+              <a
+                href="aboutUs.html"
+                class="block text-gray-700 hover:text-primary py-2"
+                >About</a
+              >
+              <a
+                href="contact.html"
+                class="block text-gray-700 hover:text-primary py-2"
+                >Contact</a
+              >
+              <a
+                href="cart.html"
+                class="block text-gray-700 hover:text-primary py-2"
+                >Cart</a
+              >
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero text-white py-20 md:py-32">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+          <h1
+            class="text-4xl md:text-5xl font-bold mb-6 leading-tight animate-fadeIn"
+          >
+            About BookStore
+          </h1>
+          <p class="text-xl mb-8 max-w-2xl mx-auto animate-fadeIn">
+            Discover our story and passion for bringing books to readers
+            everywhere.
+          </p>
+        </div>
+      </section>
+
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="animate-fadeIn">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Our Story</h2>
+            <p class="text-gray-600 leading-relaxed">
+              Founded in 2020, BookStore was born out of a love for literature
+              and a desire to make books accessible to everyone. Our mission is
+              to connect readers with stories that inspire, educate, and
+              entertain. From timeless classics to modern bestsellers, we curate
+              a diverse collection to suit every taste.
+            </p>
+            <p class="text-gray-600 leading-relaxed mt-4">
+              Our team of book enthusiasts works tirelessly to bring you a
+              seamless online shopping experience, with personalized
+              recommendations and exclusive deals. Whether you're a casual
+              reader or a dedicated bibliophile, BookStore is your home for
+              literary discovery.
+            </p>
+          </div>
+          <div class="animate-fadeIn">
+            <img
+              src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+              alt="Books on shelf"
+              class="rounded-lg shadow-md w-full h-80 object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-gray-100 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2
+            class="text-3xl font-bold text-gray-800 mb-6 text-center animate-fadeIn"
+          >
+            Our Mission
+          </h2>
+          <p
+            class="text-xl text-gray-600 max-w-3xl mx-auto mb-8 text-center animate-fadeIn"
+          >
+            At BookStore, we believe in the power of stories to shape lives and
+            communities. Our mission is to foster a love for reading by offering
+            a curated selection of books, exceptional customer service, and a
+            welcoming online community for book lovers.
+          </p>
+        </div>
+      </section>
+
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h2
+          class="text-3xl font-bold text-gray-800 mb-6 text-center animate-fadeIn"
+        >
+          Our Team
+        </h2>
+        <p
+          class="text-xl text-gray-600 max-w-3xl mx-auto mb-8 text-center animate-fadeIn"
+        >
+          Meet the passionate individuals behind BookStore who make our vision
+          come to life.
+        </p>
+        <div
+          class="font-std mb-10 w-full rounded-2xl bg-white p-10 font-normal leading-relaxed text-gray-900 shadow-xl"
+        >
+          <div class="flex flex-col md:flex-row">
+            <div class="md:w-1/3 text-center mb-8 md:mb-0">
+              <img
+                src="../images/IMG_3733.JPG"
+                alt="Profile Picture"
+                class="rounded-full w-48 h-58 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 ring ring-gray-300"
+              />
+            </div>
+            <div class="md:w-2/3 md:pl-8">
+              <h1 class="text-2xl font-bold text-primary mb-2">Chim Theara</h1>
+              <p class="text-gray-600 mb-6">SETEC's Student</p>
+
+              <h2 class="text-xl font-semibold text-primary mb-4">
+                Contact Information
+              </h2>
+              <ul class="space-y-2 text-gray-700">
+                <li class="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2 text-primary"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"
+                    />
+                    <path
+                      d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"
+                    />
+                  </svg>
+                  chimtheara93@gmail.com
+                </li>
+                <li class="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2 text-primary"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"
+                    />
+                  </svg>
+                  +855 68 427 420
+                </li>
+                <li class="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2 text-primary"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  Phnom Penh
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-lg font-semibold mb-4">BookStore</h3>
+            <p class="text-gray-400">
+              Your favorite online bookstore for quality reads.
+            </p>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="index.html" class="text-gray-400 hover:text-white"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a href="shop.html" class="text-gray-400 hover:text-white"
+                  >Shop</a
+                >
+              </li>
+              <li>
+                <a href="about.html" class="text-gray-400 hover:text-white"
+                  >About</a
+                >
+              </li>
+              <li>
+                <a href="contact.html" class="text-gray-400 hover:text-white"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Customer Service</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="text-gray-400 hover:text-white">FAQs</a>
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-white">Shipping</a>
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-white">Returns</a>
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-white"
+                  >Privacy Policy</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Connect</h3>
+            <div class="flex space-x-4 mb-4">
+              <a href="#" class="text-gray-400 hover:text-white"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="#" class="text-gray-400 hover:text-white"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="#" class="text-gray-400 hover:text-white"
+                ><i class="fab fa-instagram"></i
+              ></a>
+            </div>
+            <p class="text-gray-400 text-sm">
+              123 Book Street, Library City, LC 12345
+            </p>
+          </div>
+        </div>
+        <div
+          class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400 text-sm"
+        >
+          <p>© 2025 BookStore. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6ethnicity: .0.min.js"></script>
+    <script>
+      // Update cart count
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        document.getElementById('cart-count').textContent = cart.reduce(
+          (total, item) => total + (item.quantity || 1),
+          0
+        );
+      }
+
+      // Navbar scroll animation
+      window.addEventListener('scroll', function () {
+        const nav = document.querySelector('nav');
+        if (window.scrollY > 50) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      });
+
+      // Mobile menu toggle
+      document
+        .getElementById('mobile-menu-toggle')
+        .addEventListener('click', function () {
+          const mobileMenu = document.getElementById('mobile-menu');
+          mobileMenu.classList.toggle('hidden');
+          mobileMenu.classList.toggle('open');
+        });
+
+      // Initialize cart count
+      document.addEventListener('DOMContentLoaded', updateCartCount);
+      // Update cart count
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        document.getElementById('cart-count').textContent = cart.reduce(
+          (total, item) => total + (item.quantity || 1),
+          0
+        );
+      }
+
+      // Initial render
+      document.addEventListener('DOMContentLoaded', function () {
+        updateCartCount();
+      });
+    </script>
+  </body>
+</html>

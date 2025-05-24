@@ -8,7 +8,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <script type="module" src="../script/firebase-config.js"></script>
     <style>
       * {
         margin: 0;
@@ -22,7 +21,8 @@
       }
       .container {
         background: #fff;
-        width: 450px;
+        width: 90%;
+        max-width: 450px;
         padding: 1.5rem;
         margin: 50px auto;
         border-radius: 10px;
@@ -105,28 +105,9 @@
       button:hover {
         background: #07001f;
       }
-      .or {
-        font-size: 1.1rem;
-        margin-top: 0.5rem;
-        text-align: center;
-      }
-      .icons {
-        text-align: center;
-      }
-      .icons i {
-        color: rgb(125, 125, 235);
-        padding: 0.8rem 1.5rem;
-        border-radius: 10px;
-        font-size: 1.5rem;
-        cursor: pointer;
-        border: 2px solid #dfe9f5;
-        margin: 0 15px;
-        transition: 1s;
-      }
-      .icons i:hover {
-        background: #07001f;
-        font-size: 1.6rem;
-        border: 2px solid rgb(125, 125, 235);
+      button:disabled {
+        background: #cccccc;
+        cursor: not-allowed;
       }
       .links {
         display: flex;
@@ -148,31 +129,15 @@
         text-decoration: underline;
         color: blue;
       }
-      .role-selection {
-        margin: 15px 0;
-        display: flex;
-        justify-content: space-around;
-      }
-      .role-option {
-        display: flex;
-        align-items: center;
-      }
-      .role-option input {
-        width: auto;
-        margin-right: 8px;
-      }
-      .role-option label {
-        position: static;
-        color: #757575;
-        font-size: 15px;
-        cursor: pointer;
+      .messageDiv {
+        transition: opacity 1s ease;
       }
     </style>
   </head>
   <body>
     <div class="container" id="signup" style="display: none">
       <h1 class="form-title">Register</h1>
-      <form>
+      <form id="signupForm">
         <div
           id="signUpMessage"
           class="messageDiv"
@@ -203,44 +168,17 @@
           />
           <label for="rPassword">Password</label>
         </div>
-        <div class="role-selection">
-          <div class="role-option">
-            <input
-              type="radio"
-              id="adminRole"
-              name="userRole"
-              value="admin"
-              required
-            />
-            <label for="adminRole">Admin</label>
-          </div>
-          <div class="role-option">
-            <input
-              type="radio"
-              id="userRole"
-              name="userRole"
-              value="user"
-              required
-            />
-            <label for="userRole">User</label>
-          </div>
-        </div>
         <button type="submit" class="btn" id="submitSignUp">Sign Up</button>
       </form>
-      <p class="or">----------or--------</p>
-      <div class="icons">
-        <i class="fab fa-google"></i>
-        <i class="fab fa-facebook"></i>
-      </div>
       <div class="links">
-        <p>Already Have Account ?</p>
+        <p>Already Have Account?</p>
         <button id="signInButton">Sign In</button>
       </div>
     </div>
 
     <div class="container" id="signIn">
       <h1 class="form-title">Sign In</h1>
-      <form>
+      <form id="signInForm">
         <div
           id="signInMessage"
           class="messageDiv"
@@ -261,14 +199,9 @@
           />
           <label for="password">Password</label>
         </div>
-        <p class="recover"><a href="#">Recover Password</a></p>
+        <p class="recover"><a href="#" id="recoverLink">Recover Password</a></p>
         <button type="submit" class="btn" id="submitSignIn">Sign In</button>
       </form>
-      <p class="or">----------or--------</p>
-      <div class="icons">
-        <i class="fab fa-google"></i>
-        <i class="fab fa-facebook"></i>
-      </div>
       <div class="links">
         <p>Don't have account yet?</p>
         <button id="signUpButton">Sign Up</button>
@@ -276,43 +209,93 @@
     </div>
 
     <script type="module">
-      import { auth } from '../script/firebase-config.js';
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js';
       import {
+        getAuth,
         createUserWithEmailAndPassword,
         signInWithEmailAndPassword,
-      } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+        sendPasswordResetEmail,
+        updateProfile,
+      } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js';
+      import {
+        getFirestore,
+        setDoc,
+        doc,
+        getDoc,
+      } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js';
 
-      const signUpButton = document.getElementById('signUpButton');
-      const signInButton = document.getElementById('signInButton');
-      const signUpForm = document.getElementById('signup');
-      const signInForm = document.getElementById('signIn');
-      const signUpMessage = document.getElementById('signUpMessage');
-      const signInMessage = document.getElementById('signInMessage');
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: 'AIzaSyDWWQNIsb__EwfxjeJeGKiGbqQNA_K_wXU',
+        authDomain: 'finalsetec.firebaseapp.com',
+        projectId: 'finalsetec',
+        storageBucket: 'finalsetec.appspot.com',
+        messagingSenderId: '111968946774',
+        appId: '1:111968946774:web:2a4ed69409bc8015c209f7',
+      };
 
-      // Toggle forms
-      signUpButton.addEventListener('click', () => {
-        signInForm.style.display = 'none';
-        signUpForm.style.display = 'block';
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth();
+      const db = getFirestore();
+
+      // Utility function to show messages
+      function showMessage(message, divId, isError = true) {
+        const messageDiv = document.getElementById(divId);
+        messageDiv.style.display = 'block';
+        messageDiv.textContent = message;
+        messageDiv.style.color = isError ? 'red' : 'green';
+        messageDiv.style.opacity = 1;
+
+        setTimeout(() => {
+          messageDiv.style.opacity = 0;
+          setTimeout(() => {
+            messageDiv.style.display = 'none';
+          }, 1000);
+        }, 5000);
+      }
+
+      // Toggle between forms
+      document.getElementById('signUpButton').addEventListener('click', () => {
+        document.getElementById('signIn').style.display = 'none';
+        document.getElementById('signup').style.display = 'block';
       });
 
-      signInButton.addEventListener('click', () => {
-        signInForm.style.display = 'block';
-        signUpForm.style.display = 'none';
+      document.getElementById('signInButton').addEventListener('click', () => {
+        document.getElementById('signup').style.display = 'none';
+        document.getElementById('signIn').style.display = 'block';
       });
 
       // Handle Sign Up
       document
-        .getElementById('submitSignUp')
-        .addEventListener('click', async (e) => {
+        .getElementById('signupForm')
+        .addEventListener('submit', async (e) => {
           e.preventDefault();
+          const submitButton = document.getElementById('submitSignUp');
+          submitButton.disabled = true;
 
           const email = document.getElementById('rEmail').value;
           const password = document.getElementById('rPassword').value;
-          const fName = document.getElementById('fName').value;
-          const lName = document.getElementById('lName').value;
-          const role = document.querySelector(
-            'input[name="userRole"]:checked'
-          ).value;
+          const firstName = document.getElementById('fName').value.trim();
+          const lastName = document.getElementById('lName').value.trim();
+
+          // Client-side validation
+          if (!firstName || !lastName) {
+            showMessage(
+              'Please enter your first and last name.',
+              'signUpMessage'
+            );
+            submitButton.disabled = false;
+            return;
+          }
+          if (password.length < 6) {
+            showMessage(
+              'Password must be at least 6 characters long.',
+              'signUpMessage'
+            );
+            submitButton.disabled = false;
+            return;
+          }
 
           try {
             const userCredential = await createUserWithEmailAndPassword(
@@ -322,22 +305,48 @@
             );
             const user = userCredential.user;
 
-            signUpMessage.style.display = 'block';
-            signUpMessage.style.color = 'green';
-            signUpMessage.textContent = `Account created successfully for ${fName} (${role})!`;
+            // Update user profile
+            await updateProfile(user, {
+              displayName: `${firstName} ${lastName}`,
+            });
 
-            // Optional: Save extra user info in Firestore or Realtime Database
+            // Store user data in Firestore
+            await setDoc(doc(db, 'users', user.uid), {
+              email: email,
+              firstName: firstName,
+              lastName: lastName,
+              role: 'user',
+              createdAt: new Date().toISOString(),
+            });
+
+            showMessage(
+              'Account created successfully! Redirecting...',
+              'signUpMessage',
+              false
+            );
+            setTimeout(() => {
+              window.location.href = '../index.html';
+            }, 1500);
           } catch (error) {
-            signUpMessage.style.display = 'block';
-            signUpMessage.textContent = error.message;
+            let message = 'Unable to create user: ' + error.message;
+            if (error.code === 'auth/email-already-in-use') {
+              message = 'Email address already exists!';
+            } else if (error.code === 'auth/weak-password') {
+              message = 'Password should be at least 6 characters.';
+            }
+            showMessage(message, 'signUpMessage');
+          } finally {
+            submitButton.disabled = false;
           }
         });
 
       // Handle Sign In
       document
-        .getElementById('submitSignIn')
-        .addEventListener('click', async (e) => {
+        .getElementById('signInForm')
+        .addEventListener('submit', async (e) => {
           e.preventDefault();
+          const submitButton = document.getElementById('submitSignIn');
+          submitButton.disabled = true;
 
           const email = document.getElementById('email').value;
           const password = document.getElementById('password').value;
@@ -350,17 +359,72 @@
             );
             const user = userCredential.user;
 
-            signInMessage.style.display = 'block';
-            signInMessage.style.color = 'green';
-            signInMessage.textContent = 'Login successful! Redirecting...';
+            // Get user role from Firestore
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              localStorage.setItem('loggedInUserId', user.uid);
+              localStorage.setItem('userRole', userData.role || 'user');
 
-            // Example redirect after login
-            setTimeout(() => {
-              window.location.href = 'cart.html'; // or admin.html based on role if stored
-            }, 1500);
+              showMessage(
+                'Login successful! Redirecting...',
+                'signInMessage',
+                false
+              );
+              setTimeout(() => {
+                window.location.href =
+                  userData.role === 'admin'
+                    ? '../pages/admin.html'
+                    : '../index.html';
+              }, 1500);
+            } else {
+              showMessage('User data not found.', 'signInMessage');
+            }
           } catch (error) {
-            signInMessage.style.display = 'block';
-            signInMessage.textContent = error.message;
+            let message = 'Login failed: ' + error.message;
+            if (
+              error.code === 'auth/invalid-credential' ||
+              error.code === 'auth/wrong-password' ||
+              error.code === 'auth/user-not-found'
+            ) {
+              message = 'Incorrect email or password.';
+            }
+            showMessage(message, 'signInMessage');
+          } finally {
+            submitButton.disabled = false;
+          }
+        });
+
+      // Handle Password Reset
+      document
+        .getElementById('recoverLink')
+        .addEventListener('click', async (e) => {
+          e.preventDefault();
+          const email = document.getElementById('email').value;
+
+          if (!email) {
+            showMessage(
+              'Please enter your email to reset password.',
+              'signInMessage'
+            );
+            return;
+          }
+
+          try {
+            await sendPasswordResetEmail(auth, email);
+            showMessage(
+              'Password reset email sent! Check your inbox.',
+              'signInMessage',
+              false
+            );
+          } catch (error) {
+            let message = 'Failed to send reset email: ' + error.message;
+            if (error.code === 'auth/invalid-email') {
+              message = 'Invalid email address.';
+            } else if (error.code === 'auth/user-not-found') {
+              message = 'No user found with this email.';
+            }
+            showMessage(message, 'signInMessage');
           }
         });
     </script>
