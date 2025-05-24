@@ -40,6 +40,13 @@
       .btn-save:hover {
         background-color: #806044;
       }
+      .invalid-feedback {
+        display: none;
+        color: #dc3545;
+      }
+      .form-control.is-invalid ~ .invalid-feedback {
+        display: block;
+      }
     </style>
   </head>
   <body>
@@ -78,14 +85,14 @@
               <span class="navbar-brand mb-0 h1">Register Books</span>
               <div class="ms-auto">
                 <button class="btn btn-primary" id="logoutBtn">
-                  <i class="bi bi-person-circle"></i> Admin
+                  <i class="bi bi-person-circle"></i> Admin Ascending Admin
                 </button>
               </div>
             </div>
           </nav>
           <div class="container-fluid">
             <section class="Form">
-              <form id="bookForm">
+              <form id="bookForm" novalidate>
                 <h3 class="text-center mb-4">Register Book</h3>
                 <div class="form-group mb-3">
                   <label for="input_isbn">ISBN</label>
@@ -95,6 +102,9 @@
                     id="input_isbn"
                     required
                   />
+                  <div class="invalid-feedback" id="isbn-error">
+                    Please enter a valid ISBN (10 or 13 digits).
+                  </div>
                 </div>
                 <div class="form-group mb-3">
                   <label for="input_title">Book Title</label>
@@ -104,6 +114,9 @@
                     id="input_title"
                     required
                   />
+                  <div class="invalid-feedback" id="title-error">
+                    Please enter a book title.
+                  </div>
                 </div>
                 <div class="form-group mb-3">
                   <label for="input_author">Author</label>
@@ -113,6 +126,9 @@
                     id="input_author"
                     required
                   />
+                  <div class="invalid-feedback" id="author-error">
+                    Please enter the author's name.
+                  </div>
                 </div>
                 <div class="form-group mb-3">
                   <label for="input_genre">Genre</label>
@@ -125,6 +141,9 @@
                     <option value="Fantasy">Fantasy</option>
                     <option value="Biography">Biography</option>
                   </select>
+                  <div class="invalid-feedback" id="genre-error">
+                    Please select a genre.
+                  </div>
                 </div>
                 <div class="form-group mb-3">
                   <label for="input_cost">Cost</label>
@@ -135,6 +154,9 @@
                     id="input_cost"
                     required
                   />
+                  <div class="invalid-feedback" id="cost-error">
+                    Please enter a valid cost (positive number).
+                  </div>
                 </div>
                 <div class="form-group mb-3">
                   <label for="input_price">Price</label>
@@ -145,6 +167,9 @@
                     id="input_price"
                     required
                   />
+                  <div class="invalid-feedback" id="price-error">
+                    Please enter a valid price (positive number).
+                  </div>
                 </div>
                 <div class="form-group mb-3">
                   <label for="input_image">Cover Image URL</label>
@@ -154,6 +179,9 @@
                     id="input_image"
                     required
                   />
+                  <div class="invalid-feedback" id="image-error">
+                    Please enter a valid URL for the cover image.
+                  </div>
                 </div>
                 <button type="submit" class="btn btn-save w-100">
                   Save Book
@@ -167,38 +195,87 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       function validateISBN(isbn) {
-        isbn = isbn.replace(/[-\s]/g, '');
-        return isbn.length === 10 || isbn.length === 13;
+        isbn = isbn.replace(/[-\s]/g, "");
+        return /^\d{10,13}$/.test(isbn);
+      }
+
+      function validateURL(url) {
+        try {
+          new URL(url);
+          return /^https?:\/\/.*\.(jpg|jpeg|png|gif)$/i.test(url);
+        } catch (e) {
+          return false;
+        }
       }
 
       document
-        .getElementById('bookForm')
-        .addEventListener('submit', function (e) {
+        .getElementById("bookForm")
+        .addEventListener("submit", function (e) {
           e.preventDefault();
-          const isbn = document.getElementById('input_isbn').value.trim();
-          const title = document.getElementById('input_title').value.trim();
-          const author = document.getElementById('input_author').value.trim();
-          const genre = document.getElementById('input_genre').value;
-          const cost = document.getElementById('input_cost').value.trim();
-          const price = document.getElementById('input_price').value.trim();
-          const image = document.getElementById('input_image').value.trim();
 
+          // Reset previous validation states
+          const inputs = [
+            "input_isbn",
+            "input_title",
+            "input_author",
+            "input_genre",
+            "input_cost",
+            "input_price",
+            "input_image",
+          ];
+          inputs.forEach((id) => {
+            const input = document.getElementById(id);
+            input.classList.remove("is-invalid");
+          });
+
+          // Get form values
+          const isbn = document.getElementById("input_isbn").value.trim();
+          const title = document.getElementById("input_title").value.trim();
+          const author = document.getElementById("input_author").value.trim();
+          const genre = document.getElementById("input_genre").value;
+          const cost = document.getElementById("input_cost").value.trim();
+          const price = document.getElementById("input_price").value.trim();
+          const image = document.getElementById("input_image").value.trim();
+
+          let isValid = true;
+
+          // Validate each field
           if (!validateISBN(isbn)) {
-            alert('Please enter a valid ISBN (10 or 13 digits).');
-            return;
+            document.getElementById("input_isbn").classList.add("is-invalid");
+            isValid = false;
+          }
+          if (!title) {
+            document.getElementById("input_title").classList.add("is-invalid");
+            isValid = false;
+          }
+          if (!author) {
+            document.getElementById("input_author").classList.add("is-invalid");
+            isValid = false;
+          }
+          if (!genre) {
+            document.getElementById("input_genre").classList.add("is-invalid");
+            isValid = false;
+          }
+          if (!cost || isNaN(cost) || parseFloat(cost) <= 0) {
+            document.getElementById("input_cost").classList.add("is-invalid");
+            isValid = false;
+          }
+          if (!price || isNaN(price) || parseFloat(price) <= 0) {
+            document.getElementById("input_price").classList.add("is-invalid");
+            isValid = false;
+          }
+          if (!image || !validateURL(image)) {
+            document.getElementById("input_image").classList.add("is-invalid");
+            isValid = false;
           }
 
-          if (!title || !author || !genre || !cost || !price || !image) {
-            alert('Please fill all fields.');
-            return;
+          if (isValid) {
+            let bookList = JSON.parse(localStorage.getItem("book_list")) || [];
+            bookList.push({ isbn, title, author, genre, cost, price, image });
+            localStorage.setItem("book_list", JSON.stringify(bookList));
+            alert("Book saved successfully!");
+            document.getElementById("bookForm").reset();
           }
-
-          let bookList = JSON.parse(localStorage.getItem('book_list')) || [];
-          bookList.push({ isbn, title, author, genre, cost, price, image });
-          localStorage.setItem('book_list', JSON.stringify(bookList));
-
-          alert('Book saved successfully!');
-          document.getElementById('bookForm').reset();
         });
     </script>
   </body>

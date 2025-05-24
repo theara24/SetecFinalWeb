@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -21,8 +20,14 @@
         @apply block text-sm font-medium text-gray-700 mb-1;
       }
       .required:after {
-        content: ' *';
+        content: " *";
         @apply text-red-500;
+      }
+      .error-message {
+        @apply text-red-500 text-sm mt-1 hidden;
+      }
+      .error {
+        @apply border-red-500;
       }
     </style>
   </head>
@@ -69,22 +74,16 @@
       <h1 class="text-3xl font-bold mb-8">Checkout</h1>
 
       <div class="grid grid-cols-1 gap-8">
-        <!-- Order Summary (First) -->
+        <!-- Order Summary -->
         <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
           <h2 class="text-xl font-bold mb-6">Order Summary</h2>
-
           <div id="order-items" class="mb-6">
-            <!-- Cart items will be displayed here -->
             <div id="empty-cart-message" class="text-center py-4">
               <i class="fas fa-shopping-cart text-2xl text-gray-300 mb-2"></i>
               <p class="text-gray-500">Your cart is empty</p>
             </div>
-
             <div id="order-content" class="hidden">
-              <div id="order-items-list" class="space-y-4 mb-4">
-                <!-- Order items will be added here -->
-              </div>
-
+              <div id="order-items-list" class="space-y-4 mb-4"></div>
               <div class="border-t pt-4">
                 <div class="flex justify-between mb-2">
                   <span>Subtotal:</span>
@@ -109,7 +108,7 @@
           </div>
         </div>
 
-        <!-- Customer Information Form (Second) -->
+        <!-- Customer Information Form -->
         <div class="bg-white rounded-lg shadow-lg p-8 mb-8 space-y-6">
           <h2 class="text-2xl font-semibold text-gray-800 mb-6">
             Customer Information
@@ -119,7 +118,7 @@
               <div>
                 <label
                   for="full-name"
-                  class="block text-lg font-medium text-gray-700"
+                  class="block text-lg font-medium text-gray-700 required"
                   >Full Name</label
                 >
                 <input
@@ -128,11 +127,14 @@
                   class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
                   required
                 />
+                <p id="full-name-error" class="error-message">
+                  Full name is required
+                </p>
               </div>
               <div>
                 <label
                   for="email"
-                  class="block text-lg font-medium text-gray-700"
+                  class="block text-lg font-medium text-gray-700 required"
                   >Email</label
                 >
                 <input
@@ -141,9 +143,11 @@
                   class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
                   required
                 />
+                <p id="email-error" class="error-message">
+                  Please enter a valid email address
+                </p>
               </div>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label
@@ -156,11 +160,14 @@
                   id="phone"
                   class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
                 />
+                <p id="phone-error" class="error-message">
+                  Please enter a valid phone number
+                </p>
               </div>
               <div>
                 <label
                   for="address"
-                  class="block text-lg font-medium text-gray-700"
+                  class="block text-lg font-medium text-gray-700 required"
                   >Address</label
                 >
                 <input
@@ -169,9 +176,11 @@
                   class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
                   required
                 />
+                <p id="address-error" class="error-message">
+                  Address is required
+                </p>
               </div>
             </div>
-
             <div>
               <label for="note" class="block text-lg font-medium text-gray-700"
                 >Order Notes (Optional)</label
@@ -185,7 +194,7 @@
           </form>
         </div>
 
-        <!-- Payment Options (Third) -->
+        <!-- Payment Options -->
         <div class="bg-white rounded-lg shadow-lg p-8 space-y-6">
           <h2 class="text-2xl font-semibold text-gray-800 mb-6">
             Payment Method
@@ -241,6 +250,62 @@
               >
             </div>
           </div>
+
+          <!-- Card Details (Visible only when Credit/Debit Card is selected) -->
+          <div id="card-details" class="space-y-6 hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  for="card-number"
+                  class="block text-lg font-medium text-gray-700 required"
+                  >Card Number</label
+                >
+                <input
+                  type="tel"
+                  id="card-number"
+                  class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
+                  required
+                />
+                <p id="card-number-error" class="error-message">
+                  Please enter a valid 16-digit card number
+                </p>
+              </div>
+              <div>
+                <label
+                  for="exp-date"
+                  class="block text-lg font-medium text-gray-700 required"
+                  >Expiration Date</label
+                >
+                <input
+                  type="text"
+                  id="exp-date"
+                  placeholder="MM/YY"
+                  class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
+                  required
+                />
+                <p id="exp-date-error" class="error-message">
+                  Please enter a valid expiration date (MM/YY)
+                </p>
+              </div>
+            </div>
+            <div>
+              <label
+                for="cvv"
+                class="block text-lg font-medium text-gray-700 required"
+                >CVV</label
+              >
+              <input
+                type="tel"
+                id="cvv"
+                maxlength="4"
+                class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-[#CBB89D] focus:border-[#CBB89D]"
+                required
+              />
+              <p id="cvv-error" class="error-message">
+                Please enter a valid 3- or 4-digit CVV
+              </p>
+            </div>
+          </div>
         </div>
 
         <button
@@ -249,52 +314,365 @@
         >
           Place Order
         </button>
+        <button
+          id="pay-now-btn"
+          class="w-full bg-[#CBB89D] hover:bg-[#806044] text-white py-3 rounded-lg font-medium transition hidden"
+          disabled
+        >
+          Pay Now
+        </button>
       </div>
     </main>
 
     <script>
-      // Load cart items and calculate totals
-      function loadOrderSummary() {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const orderItemsList = document.getElementById('order-items-list');
-        const emptyCartMessage = document.getElementById('empty-cart-message');
-        const orderContent = document.getElementById('order-content');
-
-        if (cart.length === 0) {
-          emptyCartMessage.classList.remove('hidden');
-          orderContent.classList.add('hidden');
-          document.getElementById('place-order-btn').disabled = true;
-          return;
-        }
-
-        emptyCartMessage.classList.add('hidden');
-        orderContent.classList.remove('hidden');
-        document.getElementById('place-order-btn').disabled = false;
-
-        let subtotal = 0;
-        orderItemsList.innerHTML = '';
-
-        cart.forEach((item) => {
-          const itemElement = document.createElement('div');
-          itemElement.classList.add('flex', 'justify-between');
-          itemElement.innerHTML = `
-            <span>${item.name} x${item.quantity}</span>
-            <span>$${(item.price * item.quantity).toFixed(2)}</span>
-          `;
-          orderItemsList.appendChild(itemElement);
-          subtotal += item.price * item.quantity;
-        });
-
-        const tax = subtotal * 0.1;
-        const total = subtotal + tax + 5; // Adding shipping cost
-
-        document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-        document.getElementById('shipping').textContent = '5.00';
-        document.getElementById('tax').textContent = tax.toFixed(2);
-        document.getElementById('total').textContent = total.toFixed(2);
+      // Validity check functions
+      function isFullNameValid() {
+        const fullName = document.getElementById("full-name");
+        return !!fullName.value.trim();
       }
 
-      document.addEventListener('DOMContentLoaded', loadOrderSummary);
+      function isEmailValid() {
+        const email = document.getElementById("email");
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return !!email.value.trim() && emailPattern.test(email.value.trim());
+      }
+
+      function isPhoneValid() {
+        const phone = document.getElementById("phone");
+        const phonePattern = /^\+?[\d\s-]{8,}$/;
+        return !phone.value.trim() || phonePattern.test(phone.value.trim());
+      }
+
+      function isAddressValid() {
+        const address = document.getElementById("address");
+        return !!address.value.trim();
+      }
+
+      function isCardNumberValid() {
+        const cardNumber = document.getElementById("card-number");
+        const cleaned = cardNumber.value.trim().replace(/\D/g, "");
+        return cleaned.length === 16;
+      }
+
+      function isExpDateValid() {
+        const expDate = document.getElementById("exp-date");
+        const value = expDate.value.trim();
+        const parts = value.split("/");
+        if (parts.length !== 2) return false;
+        const month = parseInt(parts[0], 10);
+        const year = parseInt(parts[1], 10);
+        if (isNaN(month) || isNaN(year) || month < 1 || month > 12)
+          return false;
+        const currentYear = new Date().getFullYear() % 100;
+        const currentMonth = new Date().getMonth() + 1;
+        return (
+          year > currentYear || (year === currentYear && month >= currentMonth)
+        );
+      }
+
+      function isCVVValid() {
+        const cvv = document.getElementById("cvv");
+        return /^\d{3,4}$/.test(cvv.value.trim());
+      }
+
+      // Update button states
+      function updateButtons() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const isCustomerInfoValid =
+          isFullNameValid() &&
+          isEmailValid() &&
+          isAddressValid() &&
+          isPhoneValid();
+        const paymentMethod = document.querySelector(
+          'input[name="payment"]:checked'
+        ).value;
+        const placeOrderBtn = document.getElementById("place-order-btn");
+        const payNowBtn = document.getElementById("pay-now-btn");
+
+        if (paymentMethod === "card") {
+          placeOrderBtn.classList.add("hidden");
+          payNowBtn.classList.remove("hidden");
+          const isCardValid =
+            isCardNumberValid() && isExpDateValid() && isCVVValid();
+          payNowBtn.disabled =
+            cart.length === 0 || !isCustomerInfoValid || !isCardValid;
+        } else {
+          placeOrderBtn.classList.remove("hidden");
+          payNowBtn.classList.add("hidden");
+          placeOrderBtn.disabled = cart.length === 0 || !isCustomerInfoValid;
+        }
+      }
+
+      // Field validation functions with real-time feedback
+      function validateFullName() {
+        const fullName = document.getElementById("full-name");
+        const error = document.getElementById("full-name-error");
+        if (!fullName.value.trim()) {
+          fullName.classList.add("error");
+          error.classList.remove("hidden");
+        } else {
+          fullName.classList.remove("error");
+          error.classList.add("hidden");
+        }
+        updateButtons();
+      }
+
+      function validateEmail() {
+        const email = document.getElementById("email");
+        const error = document.getElementById("email-error");
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.value.trim() || !emailPattern.test(email.value.trim())) {
+          email.classList.add("error");
+          error.classList.remove("hidden");
+        } else {
+          email.classList.remove("error");
+          error.classList.add("hidden");
+        }
+        updateButtons();
+      }
+
+      function validatePhone() {
+        const phone = document.getElementById("phone");
+        const error = document.getElementById("phone-error");
+        const phonePattern = /^\+?[\d\s-]{8,}$/;
+        if (phone.value.trim() && !phonePattern.test(phone.value.trim())) {
+          phone.classList.add("error");
+          error.classList.remove("hidden");
+        } else {
+          phone.classList.remove("error");
+          error.classList.add("hidden");
+        }
+        updateButtons();
+      }
+
+      function validateAddress() {
+        const address = document.getElementById("address");
+        const error = document.getElementById("address-error");
+        if (!address.value.trim()) {
+          address.classList.add("error");
+          error.classList.remove("hidden");
+        } else {
+          address.classList.remove("error");
+          error.classList.add("hidden");
+        }
+        updateButtons();
+      }
+
+      function validateCardNumber() {
+        const cardNumber = document.getElementById("card-number");
+        const error = document.getElementById("card-number-error");
+        const cleaned = cardNumber.value.trim().replace(/\D/g, "");
+        if (cleaned.length !== 16) {
+          cardNumber.classList.add("error");
+          error.classList.remove("hidden");
+        } else {
+          cardNumber.classList.remove("error");
+          error.classList.add("hidden");
+        }
+        updateButtons();
+      }
+
+      function validateExpDate() {
+        const expDate = document.getElementById("exp-date");
+        const error = document.getElementById("exp-date-error");
+        if (!isExpDateValid()) {
+          expDate.classList.add("error");
+          error.classList.remove("hidden");
+        } else {
+          expDate.classList.remove("error");
+          error.classList.add("hidden");
+        }
+        updateButtons();
+      }
+
+      function validateCVV() {
+        const cvv = document.getElementById("cvv");
+        const error = document.getElementById("cvv-error");
+        if (!/^\d{3,4}$/.test(cvv.value.trim())) {
+          cvv.classList.add("error");
+          error.classList.remove("hidden");
+        } else {
+          cvv.classList.remove("error");
+          error.classList.add("hidden");
+        }
+        updateButtons();
+      }
+
+      // Load cart items and calculate totals
+      function loadOrderSummary() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const orderItemsList = document.getElementById("order-items-list");
+        const emptyCartMessage = document.getElementById("empty-cart-message");
+        const orderContent = document.getElementById("order-content");
+        const cartCount = document.getElementById("cart-count");
+
+        if (cart.length === 0) {
+          emptyCartMessage.classList.remove("hidden");
+          orderContent.classList.add("hidden");
+          cartCount.textContent = "0";
+        } else {
+          emptyCartMessage.classList.add("hidden");
+          orderContent.classList.remove("hidden");
+          cartCount.textContent = cart.reduce(
+            (sum, item) => sum + item.quantity,
+            0
+          );
+
+          let subtotal = 0;
+          orderItemsList.innerHTML = "";
+          cart.forEach((item, index) => {
+            const itemElement = document.createElement("div");
+            itemElement.classList.add(
+              "flex",
+              "justify-between",
+              "items-center"
+            );
+            itemElement.innerHTML = `
+              <span>${item.title} x${item.quantity}</span>
+              <div class="flex items-center">
+                <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                <button class="ml-4 text-red-500 hover:text-red-700 remove-item" data-index="${index}">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            `;
+            orderItemsList.appendChild(itemElement);
+            subtotal += item.price * item.quantity;
+          });
+
+          const tax = subtotal * 0.1;
+          const total = subtotal + tax + 5;
+          document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+          document.getElementById("shipping").textContent = "5.00";
+          document.getElementById("tax").textContent = tax.toFixed(2);
+          document.getElementById("total").textContent = total.toFixed(2);
+
+          document.querySelectorAll(".remove-item").forEach((button) => {
+            button.addEventListener("click", () =>
+              removeItem(button.dataset.index)
+            );
+          });
+        }
+        updateButtons();
+      }
+
+      // Remove item from cart
+      function removeItem(index) {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart.splice(index, 1);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        loadOrderSummary();
+      }
+
+      // Form validation on submission
+      function validateForm() {
+        let isValid = true;
+        if (!isFullNameValid()) {
+          validateFullName();
+          isValid = false;
+        }
+        if (!isEmailValid()) {
+          validateEmail();
+          isValid = false;
+        }
+        if (!isPhoneValid()) {
+          validatePhone();
+          isValid = false;
+        }
+        if (!isAddressValid()) {
+          validateAddress();
+          isValid = false;
+        }
+        const paymentMethod = document.querySelector(
+          'input[name="payment"]:checked'
+        ).value;
+        if (paymentMethod === "card") {
+          if (!isCardNumberValid()) {
+            validateCardNumber();
+            isValid = false;
+          }
+          if (!isExpDateValid()) {
+            validateExpDate();
+            isValid = false;
+          }
+          if (!isCVVValid()) {
+            validateCVV();
+            isValid = false;
+          }
+        }
+        return isValid;
+      }
+
+      // Toggle card details visibility
+      function toggleCardDetails() {
+        const paymentMethod = document.querySelector(
+          'input[name="payment"]:checked'
+        ).value;
+        const cardDetails = document.getElementById("card-details");
+        if (paymentMethod === "card") {
+          cardDetails.classList.remove("hidden");
+        } else {
+          cardDetails.classList.add("hidden");
+        }
+        updateButtons();
+      }
+
+      // Handle form submission
+      document
+        .getElementById("place-order-btn")
+        .addEventListener("click", (e) => {
+          e.preventDefault();
+          if (validateForm()) {
+            alert("Order placed successfully!");
+            localStorage.removeItem("cart");
+            loadOrderSummary();
+          }
+        });
+
+      document.getElementById("pay-now-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        if (validateForm()) {
+          alert("Payment processed successfully!");
+          localStorage.removeItem("cart");
+          loadOrderSummary();
+        }
+      });
+
+      // Add real-time validation and payment method event listeners
+      document.addEventListener("DOMContentLoaded", () => {
+        loadOrderSummary();
+        const fullNameInput = document.getElementById("full-name");
+        fullNameInput.addEventListener("input", validateFullName);
+        fullNameInput.addEventListener("blur", validateFullName);
+
+        const emailInput = document.getElementById("email");
+        emailInput.addEventListener("input", validateEmail);
+        emailInput.addEventListener("blur", validateEmail);
+
+        const phoneInput = document.getElementById("phone");
+        phoneInput.addEventListener("input", validatePhone);
+        phoneInput.addEventListener("blur", validatePhone);
+
+        const addressInput = document.getElementById("address");
+        addressInput.addEventListener("input", validateAddress);
+        addressInput.addEventListener("blur", validateAddress);
+
+        const cardNumberInput = document.getElementById("card-number");
+        cardNumberInput.addEventListener("input", validateCardNumber);
+        cardNumberInput.addEventListener("blur", validateCardNumber);
+
+        const expDateInput = document.getElementById("exp-date");
+        expDateInput.addEventListener("input", validateExpDate);
+        expDateInput.addEventListener("blur", validateExpDate);
+
+        const cvvInput = document.getElementById("cvv");
+        cvvInput.addEventListener("input", validateCVV);
+        cvvInput.addEventListener("blur", validateCVV);
+
+        document.querySelectorAll('input[name="payment"]').forEach((radio) => {
+          radio.addEventListener("change", toggleCardDetails);
+        });
+      });
     </script>
   </body>
 </html>

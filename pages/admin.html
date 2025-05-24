@@ -13,6 +13,10 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
+      #genreChart {
+        max-width: 250px;
+        max-height: 250px;
+      }
       /* Custom Color Palette */
       .bg-primary {
         background-color: #cbb89d;
@@ -63,6 +67,9 @@
       }
       .card {
         @apply bg-white rounded-lg shadow-md p-6 transition transform hover:scale-105 hover:shadow-lg;
+      }
+      .chart-card {
+        @apply bg-white rounded-lg shadow-md p-4 transition transform hover:scale-105 hover:shadow-lg;
       }
       .card-icon {
         font-size: 2.5rem;
@@ -142,7 +149,7 @@
           <h2 class="text-2xl font-bold text-gray-800 mb-4">
             Welcome to BookStore POS
           </h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div class="card">
               <i class="fas fa-book card-icon"></i>
               <h5 class="text-lg font-semibold text-gray-700">Total Books</h5>
@@ -164,32 +171,40 @@
               ></ul>
             </div>
           </div>
+          <div class="chart-card">
+            <h5 class="text-lg font-semibold text-gray-700 mb-3">
+              Books by Genre
+            </h5>
+            <canvas id="genreChart"></canvas>
+          </div>
         </section>
       </main>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
-      // Load dashboard metrics
+      // Load dashboard metrics and chart
       function loadDashboardMetrics() {
-        let storedData = localStorage.getItem('book_list');
+        let storedData = localStorage.getItem("book_list");
         let books = [];
         try {
           books = storedData ? JSON.parse(storedData) : [];
           if (!Array.isArray(books)) books = [];
         } catch (error) {
-          console.error('Error parsing book_list from localStorage', error);
+          console.error("Error parsing book_list from localStorage", error);
           books = [];
         }
 
-        $('#totalBooks').text(books.length || 'No books available');
+        // Update metrics
+        $("#totalBooks").text(books.length || "No books available");
         const genres = [...new Set(books.map((book) => book.genre))];
-        $('#totalGenres').text(genres.length || 'No genres available');
+        $("#totalGenres").text(genres.length || "No genres available");
 
-        const recentBooksList = $('#recentBooks');
+        const recentBooksList = $("#recentBooks");
         recentBooksList.empty();
         if (books.length === 0) {
-          recentBooksList.append('<li>None</li>');
+          recentBooksList.append("<li>None</li>");
         } else {
           books
             .slice(-3)
@@ -198,19 +213,74 @@
               recentBooksList.append(`<li>${book.title}</li>`);
             });
         }
+
+        // Prepare data for pie chart
+        const genreCounts = {};
+        books.forEach((book) => {
+          genreCounts[book.genre] = (genreCounts[book.genre] || 0) + 1;
+        });
+
+        const chartData = {
+          labels: Object.keys(genreCounts),
+          datasets: [
+            {
+              data: Object.values(genreCounts),
+              backgroundColor: [
+                "#cbb89d",
+                "#806044",
+                "#b8a58c",
+                "#6d5238",
+                "#d3c7a6",
+                "#a68a64",
+              ],
+              borderColor: "#ffffff",
+              borderWidth: 2,
+            },
+          ],
+        };
+
+        // Render pie chart
+        const ctx = document.getElementById("genreChart").getContext("2d");
+        new Chart(ctx, {
+          type: "pie",
+          data: chartData,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  color: "#4b5563",
+                  font: {
+                    size: 12,
+                  },
+                },
+              },
+              title: {
+                display: true,
+                text: "Book Distribution by Genre",
+                color: "#4b5563",
+                font: {
+                  size: 14,
+                },
+              },
+            },
+          },
+        });
       }
 
       // Logout functionality
-      $('#logoutBtn').on('click', function () {
-        localStorage.removeItem('userRole');
-        window.location.href = 'register.html';
+      $("#logoutBtn").on("click", function () {
+        localStorage.removeItem("userRole");
+        window.location.href = "register.html";
       });
 
       // Check admin access
       $(document).ready(function () {
-        const userRole = localStorage.getItem('userRole');
-        if (userRole !== 'admin') {
-          window.location.href = 'register.html?role=admin';
+        const userRole = localStorage.getItem("userRole");
+        if (userRole !== "admin") {
+          window.location.href = "register.html?role=admin";
         } else {
           loadDashboardMetrics();
         }
